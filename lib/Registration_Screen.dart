@@ -174,19 +174,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                               SizedBox(height: 8,),
 
-                              Container(
-                                margin: EdgeInsets.only(left: 200),
+                              GestureDetector(
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 200),
+                                  child: Column(
+                                    children: [
+                                      Text("Already have an account?", style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey
+                                      ),)
 
-
-                                child: Column(
-                                  children: [
-                                    Text("Already Have an Account", style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.grey
-                                    ),)
-
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                                onTap: (){
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => LoginPage())
+                                  );
+                                },
                               ),
 
 

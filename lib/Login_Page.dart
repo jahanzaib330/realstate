@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home_Screen.dart';
+import 'Registration_Screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
     try{
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.text.toString(), password: pass.text.toString());
       Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen(),));
+      SharedPreferences userLoginDetails = await SharedPreferences.getInstance();
+      userLoginDetails.setBool("userLoggedIn", true);
 
     } on FirebaseAuthException catch(ex){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${ex.code.toString()}")));
@@ -110,17 +114,24 @@ class _LoginPageState extends State<LoginPage> {
                   ),
          SizedBox(height: 8,),
                   
-                  Container(
-                    margin: EdgeInsets.only(left: 250),
-                    child: Column(
-                      children: [
-                        Text("Forgot Password?", style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey
-                        ),)
-                        
-                      ],
+                  GestureDetector(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 200),
+                      child: Column(
+                        children: [
+                          Text("Don't have an account?", style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey
+                          ),)
+
+                        ],
+                      ),
                     ),
+                    onTap: (){
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RegistrationScreen())
+                      );
+                    },
                   ),
 
 

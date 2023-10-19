@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:realestate/Contact_Screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'About_screen.dart';
 import 'Description_Screen.dart';
+import 'Login_Page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,179 +27,199 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("RealEstate Agency"),
-          centerTitle: true,
-          elevation: 0,
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  icon: Icon(
-                    Icons.list,
-                    color: Colors.black,
-                  ));
-            },
+
+      return Scaffold(
+          appBar: AppBar(
+            title: Text("RealEstate Agency"),
+            centerTitle: true,
+            elevation: 0,
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    icon: Icon(
+                      Icons.list,
+                      color: Colors.black,
+                    ));
+              },
+            ),
+            backgroundColor: Colors.greenAccent,
           ),
-          backgroundColor: Colors.greenAccent,
-        ),
-        drawer: Drawer(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 160,
-                color: Colors.lightBlueAccent,
-              ),
-              GestureDetector(
-                child: ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text("Home"),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
-                  },
+          drawer: Drawer(
+
+            child: Column(
+              children: [
+                Container(
+
+                  width: double.infinity,
+                  height: 160,
+                  color: Colors.greenAccent,
+                  child: Text("WellCome to: ${FirebaseAuth.instance.currentUser!.email}"),
                 ),
-              ),
-              GestureDetector(
-                child: ListTile(
-                  leading: Icon(Icons.abc_outlined),
-                  title: Text("About"),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AboutScreen()));
-                  },
+                GestureDetector(
+                  child: ListTile(
+                    leading: Icon(Icons.home),
+                    title: Text("Home"),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()));
+                    },
+                  ),
                 ),
-              ),
-              GestureDetector(
-                child: ListTile(
-                  leading: Icon(Icons.contacts),
-                  title: Text("Contact"),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ContactScreen()));
-                  },
+                GestureDetector(
+                  child: ListTile(
+                    leading: Icon(Icons.abc_outlined),
+                    title: Text("About"),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AboutScreen()));
+                    },
+                  ),
                 ),
-              ),
-            ],
+                GestureDetector(
+                  child: ListTile(
+                    leading: Icon(Icons.contacts),
+                    title: Text("Contact"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ContactScreen()));
+                    },
+                  ),
+                ),
+                GestureDetector(
+                  child: ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text("Logout"),
+                    onTap: ()async {
+                      FirebaseAuth.instance.signOut();
+                      SharedPreferences userLoinDetails = await SharedPreferences.getInstance();
+                      userLoinDetails.setBool("userLoggedIn", false);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginPage()));
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        body: SingleChildScrollView(
-            physics: const ScrollPhysics(),
-            child: Column(children: [
-              Container(
-                margin: EdgeInsets.only(left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Popular Home",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                    ),
-                    Container(
-                      width: 40,
-                      margin: EdgeInsets.only(),
-                      child: Divider(
-                        color: Colors.black,
-                        thickness: 3,
+          body: SingleChildScrollView(
+              physics: const ScrollPhysics(),
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Popular Home",
+                        style:
+                            TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                       ),
-                    ),
-                    GridView.count(
-                        crossAxisCount: 2,
-                        scrollDirection: Axis.vertical,
-                        physics: const ScrollPhysics(),
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        shrinkWrap: true,
-                        childAspectRatio: 140 / 260,
-                        children: List.generate(
-                            HomeImage.length,
-                            (index) => Stack(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      height: 400,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          border:
-                                              Border.all(color: Colors.black),
-                                          color: Colors.grey.shade400),
-                                    ),
-                                    Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DescriptionScreen(
-                                                          image: '',
-                                                          Price: '',
-                                                        )));
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 10),
-                                            width: 300,
-                                            height: 200,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: Colors.white,
-                                                image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: NetworkImage(
-                                                        "${HomeImage[index]}"))),
+                      Container(
+                        width: 40,
+                        margin: EdgeInsets.only(),
+                        child: Divider(
+                          color: Colors.black,
+                          thickness: 3,
+                        ),
+                      ),
+                      GridView.count(
+                          crossAxisCount: 2,
+                          scrollDirection: Axis.vertical,
+                          physics: const ScrollPhysics(),
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          shrinkWrap: true,
+                          childAspectRatio: 140 / 260,
+                          children: List.generate(
+                              HomeImage.length,
+                              (index) => Stack(
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        height: 400,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            border:
+                                                Border.all(color: Colors.black),
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DescriptionScreen(
+                                                            image: '',
+                                                            Price: '',
+                                                          )));
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 10),
+                                              width: 300,
+                                              height: 200,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: Colors.white,
+                                                  image: DecorationImage(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(
+                                                          "${HomeImage[index]}"))),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 14),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "Area Name:${AreaName[index]}",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                              Text(
-                                                "House Square feet${Size[index]}",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                              Text(
-                                                "House Price${Price[index]}",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              ),
-                                            ],
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          SizedBox(
+                                            width: 10,
                                           ),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                )))
-                  ],
+                                          Container(
+                                            margin: EdgeInsets.only(left: 14),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "Area Name:${AreaName[index]}",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                Text(
+                                                  "House Square feet${Size[index]}",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                Text(
+                                                  "House Price${Price[index]}",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  )))
+                    ],
+                  ),
                 ),
-              ),
+
             ])));
   }
 }
