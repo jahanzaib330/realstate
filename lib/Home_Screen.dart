@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:realestate/Contact_Screen.dart';
+import 'package:realestate/firebase_firestore/insert_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'About_screen.dart';
 import 'Description_Screen.dart';
-import 'Login_Page.dart';
+import 'firebase_auth/Login_Page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -87,6 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ContactScreen()));
+                    },
+                  ),
+                ),
+                GestureDetector(
+                  child: ListTile(
+                    leading: Icon(Icons.contacts),
+                    title: Text("Insert Data"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InsertScreem()));
                     },
                   ),
                 ),

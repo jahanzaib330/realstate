@@ -7,8 +7,8 @@ import 'package:realestate/firebase_options.dart';
 
 
 
-import 'Login_Page.dart';
-import 'Registration_Screen.dart';
+import 'firebase_auth/Login_Page.dart';
+import 'firebase_auth/Registration_Screen.dart';
 import 'Home_Screen.dart';
 
 void main()async {
