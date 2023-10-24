@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:realestate/firebase_firestore/Fetch_Screen.dart';
 import 'package:uuid/uuid.dart';
 
 class InsertScreem extends StatefulWidget {
@@ -29,6 +30,7 @@ class _InsertScreemState extends State<InsertScreem> {
       };
       // await FirebaseFirestore.instance.collection("userData").add(userDetail);
     await FirebaseFirestore.instance.collection("userData").doc(userId).set(userDetail);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FetchScreen(),));
     }
 
 
@@ -194,7 +196,7 @@ class _InsertScreemState extends State<InsertScreem> {
                             // Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage() ));
 
                           },
-                              child: Text("Register" , style: TextStyle(
+                              child: Text("Insert" , style: TextStyle(
                                 backgroundColor: Colors.black,
                                 color: Colors.white,
                                 fontSize: 35,

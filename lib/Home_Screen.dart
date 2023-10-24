@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:realestate/Contact_Screen.dart';
+import 'package:realestate/firebase_firestore/Fetch_Screen.dart';
 import 'package:realestate/firebase_firestore/insert_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -99,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => InsertScreem()));
+                              builder: (context) => FetchScreen()));
                     },
                   ),
                 ),
