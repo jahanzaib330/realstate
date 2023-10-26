@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:realestate/firebase_firestore/Update_Screen.dart';
 import 'package:realestate/firebase_firestore/insert_Screen.dart';
 
 
@@ -38,16 +39,19 @@ class _FetchScreenState extends State<FetchScreen> {
                           String userId = snapshot.data!.docs[index].id;
                           String userName = snapshot.data!.docs[index]['User-Name'];
                           String userEmail = snapshot.data!.docs[index]['User-Email'];
-                          String userPassword = snapshot.data!.docs[index]['User-Contact'];
+                          String userContact = snapshot.data!.docs[index]['User-Contact'];
+                          String userAge = snapshot.data!.docs[index]['User-Age'];
 
                           return GestureDetector(
-                            onLongPress: ()async{
+
+                            onTap: ()async{
                               showDialog<void>(
                                   context: context,
                                   builder: (BuildContext dialogcontext){
                                     return AlertDialog(
-                                      title: Text("Delete USer"),
-                                      content: Text("Are You sure you want to dalete $userName"),
+                                      title: Text("Delete User and Update User"),
+
+
                                       actions: <Widget>[
                                         TextButton(
                                     child: Text('Delete'),
@@ -58,6 +62,10 @@ class _FetchScreenState extends State<FetchScreen> {
 
 
                                         }, ),
+                                        TextButton(
+                                            onPressed: (){
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateScreen(uid: userId, u_name: userName, u_email: userEmail, u_contact:userContact, u_age: userAge, )));
+                                            }, child: Text("Update"))
                                       ],
                                     );
                                   });
@@ -85,7 +93,12 @@ class _FetchScreenState extends State<FetchScreen> {
                                         fontSize: 18
                                     ),),
 
-                                    Text("User_Password: $userPassword" , style: TextStyle(
+                                    Text("User_Contact: $userContact" , style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 18
+                                    ),),
+
+                                    Text("User_Age: $userAge" , style: TextStyle(
                                         fontWeight: FontWeight.w800,
                                         fontSize: 18
                                     ),)
