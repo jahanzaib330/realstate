@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:realestate/firebase_firestore/Fetch_Screen.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,8 +20,16 @@ class _InsertScreemState extends State<InsertScreem> {
   TextEditingController age = TextEditingController();
   TextEditingController cont = TextEditingController();
 
+  void userInsertwithImage()async{
+     UploadTask uploadTask = FirebaseStorage.instance.ref().child("Images").child(Uuid().v1()).putFile(userProfile!);
+     TaskSnapshot taskSnapshot = await uploadTask;
+     String downloadUrl = await taskSnapshot .ref.getDownloadURL();
+     userInsert(imageUrl: downloadUrl);
+  }
 
-  void userInsert()async{
+
+
+  void userInsert({String? imageUrl})async{
     String userId = Uuid().v1();
 
 
@@ -25,6 +37,7 @@ class _InsertScreemState extends State<InsertScreem> {
         "User-Id": userId,
         "User-Name": name.text.toString(),
         "User-Email": email.text.toString(),
+        "User-Image": imageUrl,
         "User-Contact": cont.text.toString(),
         "User-Age": age.text.toString(),
       };
@@ -32,6 +45,8 @@ class _InsertScreemState extends State<InsertScreem> {
     await FirebaseFirestore.instance.collection("userData").doc(userId).set(userDetail);
     Navigator.push(context, MaterialPageRoute(builder: (context) => FetchScreen(),));
     }
+
+    File? userProfile;
 
 
 
@@ -78,6 +93,29 @@ class _InsertScreemState extends State<InsertScreem> {
                             fontSize: 30,
 
                           ),),
+
+                          SizedBox(height: 25,),
+
+                          GestureDetector(
+                            onTap: ()async{
+                              XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+                              if (selectedImage != null){
+                                File convertedImage = File(selectedImage.path);
+                                setState(() {
+                                  userProfile = convertedImage;
+                                });
+                              }
+                              else{
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Image Not Selected")));
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Colors.blue,
+                              backgroundImage: userProfile!=null?FileImage(userProfile!):null,
+                            ),
+                          ),
+
 
                           SizedBox(height: 25,),
 
@@ -183,7 +221,7 @@ class _InsertScreemState extends State<InsertScreem> {
 
                           ElevatedButton(onPressed: (){
                             if (_formkey.currentState!.validate()){
-                              userInsert();
+                              userInsertwithImage();
                               print(name.text.toString());
                               print(email.text.toString());
                               print(cont.text.toString());
