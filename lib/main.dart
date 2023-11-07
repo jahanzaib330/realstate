@@ -11,6 +11,7 @@ import 'firebase_auth/Login_Page.dart';
 import 'firebase_auth/Registration_Screen.dart';
 import 'Home_Screen.dart';
 import 'firebase_firestore/insert_Screen.dart';
+import 'horizontal_screen_view.dart';
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
     )
         : Navigator.pushReplacement(
         context, 
-        MaterialPageRoute(builder: (context)=> InsertScreem(),)
+        MaterialPageRoute(builder: (context)=> horizontalScreen(),)
     )
     );
     super.initState();

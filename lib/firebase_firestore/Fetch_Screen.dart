@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:realestate/firebase_firestore/Update_Screen.dart';
 import 'package:realestate/firebase_firestore/insert_Screen.dart';
@@ -38,6 +39,7 @@ class _FetchScreenState extends State<FetchScreen> {
 
                           String userId = snapshot.data!.docs[index].id;
                           String userName = snapshot.data!.docs[index]['User-Name'];
+                          String userImage = snapshot.data!.docs[index]['User-Image'];
                           String userEmail = snapshot.data!.docs[index]['User-Email'];
                           String userContact = snapshot.data!.docs[index]['User-Contact'];
                           String userAge = snapshot.data!.docs[index]['User-Age'];
@@ -57,14 +59,17 @@ class _FetchScreenState extends State<FetchScreen> {
                                     child: Text('Delete'),
                                           onPressed: () async{
                                       await FirebaseFirestore.instance.collection("userData").doc(userId).delete();
+                                      await FirebaseStorage.instance.refFromURL(userImage).delete();
                                       Navigator.of(dialogcontext)
                                       .pop();
 
 
-                                        }, ),
+                                        },
+
+                                        ),
                                         TextButton(
                                             onPressed: (){
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateScreen(uid: userId, u_name: userName, u_email: userEmail, u_contact:userContact, u_age: userAge, )));
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateScreen(uid: userId, u_name: userName,uImage: userImage, u_email: userEmail, u_contact:userContact, u_age: userAge, )));
                                             }, child: Text("Update"))
                                       ],
                                     );
@@ -80,29 +85,39 @@ class _FetchScreenState extends State<FetchScreen> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.only(left: 14, top: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
                                   children: [
-                                    Text("User_Name: $userName" , style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 18
-                                    ),),
 
-                                    Text("User_Email: $userEmail" , style: TextStyle(
+                                  CircleAvatar(
+                                    radius: 30,
+                                  backgroundColor: Colors.blue,
+                                  backgroundImage: userImage!=null?NetworkImage(userImage):null,
+                                ),
+                                 Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("User_Name: $userName" , style: TextStyle(
                                         fontWeight: FontWeight.w800,
                                         fontSize: 18
-                                    ),),
+                                      ),),
 
-                                    Text("User_Contact: $userContact" , style: TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 18
-                                    ),),
+                                      Text("User_Email: $userEmail" , style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 18
+                                      ),),
 
-                                    Text("User_Age: $userAge" , style: TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 18
-                                    ),)
-                                  ],
+                                      Text("User_Contact: $userContact" , style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 18
+                                      ),),
+
+                                      Text("User_Age: $userAge" , style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 18
+                                      ),)
+                                    ],
+                                  ),
+                                ],
                                 ),
                               ),
                             ),

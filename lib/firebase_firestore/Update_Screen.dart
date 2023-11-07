@@ -1,11 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import 'Fetch_Screen.dart';
 
 class UpdateScreen extends StatefulWidget {
   String uid;
   String u_name;
+  String uImage;
   String u_email;
   String u_age;
   String u_contact;
@@ -14,6 +20,7 @@ class UpdateScreen extends StatefulWidget {
       {required this.uid,
       required this.u_name,
       required this.u_email,
+      required this.uImage,
       required this.u_age,
       required this.u_contact});
 
@@ -27,24 +34,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
   TextEditingController age = TextEditingController();
   TextEditingController cont = TextEditingController();
 
-  void userupdate() async {
-    await FirebaseFirestore.instance
-        .collection("userData")
-        .doc(widget.uid)
-        .update({
-      "User-Id": widget.uid,
-      "User-Name": name.text.toString(),
-      "User-Email": email.text.toString(),
-      "User-Contact": cont.text.toString(),
-      "User-Age": age.text.toString(),
-    });
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FetchScreen(),
-        ));
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -55,6 +44,39 @@ class _UpdateScreenState extends State<UpdateScreen> {
     age.text = widget.u_age;
     super.initState();
   }
+
+  File? userProfile;
+
+  void userUpdatewithImage()async{
+    FirebaseStorage.instance.refFromURL(widget.uImage).delete();
+    UploadTask uploadTask = FirebaseStorage.instance.ref().child("User-Image").child(Uuid().v1()).putFile(userProfile!);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    userupdate(imgUrl: downloadUrl);
+
+  }
+
+
+  void userupdate({String? imgUrl}) async {
+    await FirebaseFirestore.instance
+        .collection("userData")
+        .doc(widget.uid)
+        .update({
+      "User-Id": widget.uid,
+      "User-Name": name.text.toString(),
+      "User-Email": email.text.toString(),
+      "User-Image": imgUrl,
+      "User-Contact": cont.text.toString(),
+      "User-Age": age.text.toString(),
+    });
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FetchScreen(),
+        ));
+  }
+
+
 
   var _formkey = GlobalKey<FormState>();
 
@@ -105,6 +127,31 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           SizedBox(
                             height: 25,
                           ),
+                          GestureDetector(
+                            onTap: ()async{
+                              XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+                              if (selectedImage != null){
+                                File convertedImage = File(selectedImage.path);
+                                setState(() {
+                                  userProfile = convertedImage;
+                                });
+                              }
+
+                            },
+
+                            child: userProfile == null? CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.blue,
+                                backgroundImage: NetworkImage(widget.uImage),
+                            ):
+                               CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.blue,
+                                backgroundImage: userProfile!=null?FileImage(userProfile!):null,
+                              ),
+                            ),
+
+
 
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 20),
@@ -212,15 +259,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           ElevatedButton(
                               onPressed: () {
                                 if (_formkey.currentState!.validate()) {
-                                  userupdate();
+                                  userUpdatewithImage();
                                   print(name.text.toString());
                                   print(email.text.toString());
                                   print(cont.text.toString());
                                   print(age.text.toString());
-                                  name.clear();
-                                  email.clear();
-                                  cont.clear();
-                                  age.clear();
+
                                 }
                                 // Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage() ));
                               },

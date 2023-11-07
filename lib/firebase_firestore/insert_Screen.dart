@@ -42,7 +42,7 @@ class _InsertScreemState extends State<InsertScreem> {
         "User-Age": age.text.toString(),
       };
       // await FirebaseFirestore.instance.collection("userData").add(userDetail);
-    await FirebaseFirestore.instance.collection("userData").doc(userId).set(userDetail);
+    FirebaseFirestore.instance.collection("userData").doc(userId).set(userDetail);
     Navigator.push(context, MaterialPageRoute(builder: (context) => FetchScreen(),));
     }
 
@@ -226,10 +226,7 @@ class _InsertScreemState extends State<InsertScreem> {
                               print(email.text.toString());
                               print(cont.text.toString());
                               print(age.text.toString());
-                              name.clear();
-                              email.clear();
-                              cont.clear();
-                              age.clear();
+
                             }
                             // Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage() ));
 
